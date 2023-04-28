@@ -30,8 +30,7 @@ def RomanToArabic(s):
     for i in range(len(s)):
         if i + 3 < len(s):
             if s[i] == s[i + 1] and s[i] == s[i + 2] and s[i] == s[i + 3]:
-                print("Error 001: Roman symbols can't have 4 same in a row.")
-                return "Error"
+                return False
         else:
             break
 
@@ -43,8 +42,7 @@ def RomanToArabic(s):
                 NumberList.append(Numbers[k].Arabic)
                 continue
         if len(NumberList) != i + 1:
-            print("Error 002: written letters aren't Roman numbers.")
-            return"Error"
+            return False
     
     #Error check, Numbers are in wrong order.
     #Right: CL -> [100, 50] #Wrong: LC -> [50, 100]
@@ -52,8 +50,7 @@ def RomanToArabic(s):
     for i in range(len(NumberList)):
         if i + 1 < len(NumberList):
             if NumberList[i] * 10 < NumberList[i + 1]:
-                print("Error 003: Order of Roman numbers are wrong, where reducting number is too high")
-                return "Error"
+                return False
     
     #Turns numbers into groups that are calculated at the end
     #Example : XCIX -> [[10, 100], [1, 10]]
@@ -89,8 +86,7 @@ def RomanToArabic(s):
     for i in range(len(NumberGroups)):
         if i + 1 < len(NumberGroups):
             if NumberGroups[i] < NumberGroups[i + 1]:
-                print("Error 004: written number order is wrong, where early numbers are smaller than later numbers.")
-                return "Error"
+                return False
             
     #Error check, can't have groub before having a subtraction and then have a next groub being equal of subtraction
     #Example: [[10,100], [10], [1]]. Tens are wrong
@@ -98,8 +94,7 @@ def RomanToArabic(s):
         if i + 1 < len(NumberGroups):
             if len(NumberGroups[i]) > 1:
                 if NumberGroups[i][0] == NumberGroups[i + 1][0]:
-                    print("Error 005: written number isn't valid")
-                    return "Error"
+                    return False
 
     #Calculates numbersets. Example: [[10,100], [1,10]] -> [90, 9]
     NumberSets = []
@@ -170,32 +165,21 @@ def ArabicToRoman(s):
 
 def Convert(s):
     s = str(s) #Converts to string, if user inputs argument as an int
-    if s == "":
-        print("ERROR 006: Insert symbols")
-        return
-    
-    for i in range(len(s)): #Check if decimal
-            if s[i] == ".":
-                print("ERROR 007: written number is decimal, insert natural number")
-                return
+    if s == "" or s == None:
+        return False
+
     try:
-        s = int(s)
+        s = int(s) #If it can be a integer, then it is arabicnumber
     except:
-        s = str(s)
+        s = str(s) #If it can't be an integer, then it must be romannumeral
     
-    if isinstance(s, int):
-        if s <= 0:
-            print("ERROR 008: written number is negative or zero, type only positevenumbers")
-        elif s >= 4000:
-            print("ERROR 009: written number is too large, type number below 4000, please")
-        else:
-            print("Arabic: " + str(s) + ", Roman: " + str(ArabicToRoman(s)))
+    #Arabic to Roman
+    if isinstance(s, int) and s > 0 and s < 4000: #Can't be too high or low
+        return ArabicToRoman(s)
+    #Roman to Arabic
     if isinstance(s, str):
         s = s.replace(" ", "")
-        convertedNumber = ""
-        convertedNumber = RomanToArabic(s)
-        if convertedNumber != "Error":
-            print("Roman: " + str(s) + ", Arabic: " + str(convertedNumber))
+        return RomanToArabic(s)
 
 SetuUpNumbers()
 if __name__ == '__main__':
@@ -203,4 +187,4 @@ if __name__ == '__main__':
         print("--------------------")
         print("Roman to Arabic to Roman number converter")
         UserInput = input("Insert number: ")
-        Convert(UserInput)
+        print(Convert(UserInput))
